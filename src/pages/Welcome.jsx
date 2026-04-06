@@ -36,15 +36,21 @@ export default function Welcome() {
   }, []);
 
   const continueAsGuest = () => {
+    // Mark that user has visited the app
+    localStorage.setItem('japa_hasVisited', 'true');
     localStorage.setItem('japa_guestMode', 'true');
     window.location.href = createPageUrl('Home');
   };
 
   const goToLogin = () => {
+    // Mark that user has visited the app
+    localStorage.setItem('japa_hasVisited', 'true');
     setShowLoginModal(true);
   };
 
   const handleLoginSuccess = () => {
+    // Mark that user has visited the app
+    localStorage.setItem('japa_hasVisited', 'true');
     window.location.href = createPageUrl('Home');
   };
 

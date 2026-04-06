@@ -8,6 +8,8 @@ export default function AuthModal({ isOpen, onClose, onSuccess, initialMode = 's
   const [mode, setMode] = useState(initialMode); // 'login' or 'signup'
 
   const handleSuccess = (user) => {
+    // Mark that user has visited and chosen to authenticate
+    localStorage.setItem('japa_hasVisited', 'true');
     if (onSuccess) onSuccess(user);
     onClose();
   };

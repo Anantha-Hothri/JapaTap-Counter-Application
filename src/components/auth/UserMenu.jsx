@@ -40,6 +40,8 @@ export default function UserMenu({ stopPropagation = true }) {
 
   const logout = (e) => {
     e.stopPropagation();
+    // Clear guest mode when logging out
+    localStorage.removeItem('japa_guestMode');
     base44.auth.logout(createPageUrl('Welcome'));
   };
 
