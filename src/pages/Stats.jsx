@@ -7,10 +7,12 @@ import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContai
 import { useStats } from '@/components/useCloudSync.jsx';
 import BatterySavingsTab from '@/components/BatterySavingsTab.jsx';
 import { base44 } from '@/api/base44Client';
+import AuthModal from '@/components/auth/AuthModal';
 
 export default function Stats() {
   const [tab, setTab] = useState('overview');
   const { stats, loading, isLoggedIn } = useStats();
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const streak       = stats.streak || 0;
   const totalTaps    = stats.totalTaps || 0;
@@ -78,10 +80,17 @@ export default function Stats() {
         <h1 className="text-2xl font-bold">Login to See Statistics</h1>
         <p className="text-white/60 text-sm">Your streak, history and charts are saved to your account.</p>
         <button
-          onClick={() => base44.auth.redirectToLogin(window.location.href)}
+          onClick={() => setShowLoginModal(true)}
           className="px-8 py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 font-semibold transition-all"
         >Sign In / Register</button>
         <Link to="/" className="text-white/40 text-sm underline">Back to Counter</Link>
+
+        <AuthModal
+          isOpen={showLoginModal}
+          onClose={() => setShowLoginModal(false)}
+          onSuccess={() => window.location.reload()}
+          initialMode="signup"
+        />
       </div>
     );
   }

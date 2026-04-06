@@ -1,11 +1,14 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { base44 } from '@/api/base44Client';
+import { getCurrentUser, updateUserProfile } from '@/lib/authService';
+import { auth } from '@/lib/firebase';
 
 const DEBOUNCE_MS = 2000;
 
 // Load all stats from the cloud user object
 export async function loadStatsFromCloud() {
-  const user = await base44.auth.me();
+  const user = await getCurrentUser();
+  if (!user) return null;
+
   return {
     totalTaps:         user.totalTaps         ?? 0,
     sessionsCompleted: user.sessionsCompleted  ?? 0,
@@ -23,7 +26,7 @@ export async function loadStatsFromCloud() {
 
 // Save stats object to cloud
 export async function saveStatsToCloud(stats) {
-  await base44.auth.updateMe({
+  await updateUserProfile({
     totalTaps:         stats.totalTaps,
     sessionsCompleted: stats.sessionsCompleted,
     streak:            stats.streak,
@@ -54,14 +57,26 @@ export function useStats() {
   const pendingRef = useRef(null);
 
   useEffect(() => {
-    base44.auth.isAuthenticated().then(async authed => {
-      setIsLoggedIn(authed);
-      if (authed) {
-        const cloudStats = await loadStatsFromCloud();
-        setStats(cloudStats);
+    const initStats = async () => {
+      try {
+        // Check if user is authenticated with Firebase
+        const user = auth.currentUser;
+        setIsLoggedIn(!!user);
+
+        if (user) {
+          const cloudStats = await loadStatsFromCloud();
+          if (cloudStats) {
+            setStats(cloudStats);
+          }
+        }
+        setLoading(false);
+      } catch (error) {
+        console.log('Error loading stats:', error);
+        setIsLoggedIn(false);
+        setLoading(false);
       }
-      setLoading(false);
-    }).catch(() => setLoading(false));
+    };
+    initStats();
   }, []);
 
   const updateStats = useCallback((patch) => {

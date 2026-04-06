@@ -2,19 +2,32 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
+import AuthModal from '@/components/auth/AuthModal';
 
 export default function Welcome() {
   const [phase, setPhase] = useState('splash'); // splash | choice
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   useEffect(() => {
-    const isGuest = localStorage.getItem('japa_guestMode') === 'true';
-    base44.auth.isAuthenticated().then(authed => {
-      if (authed || isGuest) {
-        window.location.href = createPageUrl('Home');
-      } else {
-        setTimeout(() => setPhase('choice'), 2500);
+    const checkAuth = async () => {
+      const isGuest = localStorage.getItem('japa_guestMode') === 'true';
+      try {
+        const authed = await base44.auth.isAuthenticated();
+        if (authed || isGuest) {
+          window.location.href = createPageUrl('Home');
+        } else {
+          setTimeout(() => setPhase('choice'), 2500);
+        }
+      } catch (error) {
+        // Base44 not configured - go straight to choice or home if already guest
+        if (isGuest) {
+          window.location.href = createPageUrl('Home');
+        } else {
+          setTimeout(() => setPhase('choice'), 2500);
+        }
       }
-    });
+    };
+    checkAuth();
   }, []);
 
   const continueAsGuest = () => {
@@ -23,7 +36,11 @@ export default function Welcome() {
   };
 
   const goToLogin = () => {
-    base44.auth.redirectToLogin(createPageUrl('Home'));
+    setShowLoginModal(true);
+  };
+
+  const handleLoginSuccess = () => {
+    window.location.href = createPageUrl('Home');
   };
 
   return (
@@ -107,6 +124,14 @@ export default function Welcome() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        onSuccess={handleLoginSuccess}
+        initialMode="signup"
+      />
     </div>
   );
 }

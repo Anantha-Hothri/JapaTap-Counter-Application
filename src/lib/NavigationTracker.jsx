@@ -32,9 +32,13 @@ export default function NavigationTracker() {
         }
 
         if (isAuthenticated && pageName) {
-            base44.appLogs.logUserInApp(pageName).catch(() => {
-                // Silently fail - logging shouldn't break the app
-            });
+            try {
+                base44.appLogs.logUserInApp(pageName).catch(() => {
+                    // Silently fail - logging shouldn't break the app
+                });
+            } catch (error) {
+                // Base44 not configured - skip logging
+            }
         }
     }, [location, isAuthenticated, Pages, mainPageKey]);
 
