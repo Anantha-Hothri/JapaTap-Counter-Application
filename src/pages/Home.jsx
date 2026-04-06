@@ -198,54 +198,71 @@ export default function Home() {
         <motion.div animate={{ y: [0, -20, 0], opacity: [0.2, 0.4, 0.2] }} transition={{ duration: 6, repeat: Infinity }} className="absolute top-1/3 right-1/4 w-64 h-64 rounded-full bg-yellow-200/30 blur-3xl" />
       </div>
 
-      {/* Header */}
-      <div className="absolute top-0 left-0 right-0 z-20 p-4 flex justify-between items-start">
-        <button
-          onClick={resetCount}
-          className="reset-btn p-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white/90 hover:bg-white/30 transition-all active:scale-95"
-        >
-          <RotateCcw className="w-5 h-5" />
-        </button>
+      {/* Header - Mobile Optimized */}
+      <div className="absolute top-0 left-0 right-0 z-20 p-3 sm:p-4">
+        <div className="flex justify-between items-start gap-2">
+          {/* Left side - Reset button */}
+          <button
+            onClick={resetCount}
+            className="reset-btn p-2.5 sm:p-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white/90 hover:bg-white/30 transition-all active:scale-95 flex-shrink-0"
+          >
+            <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5" />
+          </button>
 
-        <div className="flex flex-col items-end gap-2">
-          <div className="flex items-center gap-2">
-            <UserMenu />
-            <BatterySaverLauncher onActivate={(mode) => { setBatterySaverMode(mode); setBatterySaverActive(true); }} />
-            <motion.button
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              onClick={(e) => { e.stopPropagation(); setRoundsMode(r => !r); }}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all backdrop-blur-md ${
-                roundsMode
-                  ? 'bg-amber-500/80 border-amber-400 text-white'
-                  : 'bg-white/20 border-white/30 text-white/90 hover:bg-white/30'
-              }`}
-              title="Toggle Rounds Mode"
-            >
-              <Bell className="w-3.5 h-3.5" />
-              <span>Rounds</span>
-            </motion.button>
-            {targetNumber && (
-              <div className="px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white/90 text-sm font-medium flex items-center gap-1.5">
-                <Bell className="w-4 h-4" />
-                {targetNumber}
-              </div>
-            )}
-            <Link
-              to={createPageUrl('Stats')}
-              onClick={(e) => e.stopPropagation()}
-              className="p-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white/90 hover:bg-white/30 transition-all active:scale-95"
-            >
-              <BarChart2 className="w-5 h-5" />
-            </Link>
-            <button
-              onClick={(e) => { e.stopPropagation(); setShowSettings(true); }}
-              className="settings-btn p-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white/90 hover:bg-white/30 transition-all active:scale-95"
-            >
-              <Settings className="w-5 h-5" />
-            </button>
+          {/* Right side - Main controls */}
+          <div className="flex flex-col items-end gap-2 min-w-0 flex-1">
+            {/* Top row - Primary actions */}
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-end">
+              <UserMenu />
+
+              {/* Hide Saver button text on very small screens */}
+              <BatterySaverLauncher onActivate={(mode) => { setBatterySaverMode(mode); setBatterySaverActive(true); }} />
+
+              {/* Rounds toggle - compact on mobile */}
+              <motion.button
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                onClick={(e) => { e.stopPropagation(); setRoundsMode(r => !r); }}
+                className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-full text-xs font-semibold border transition-all backdrop-blur-md flex-shrink-0 ${
+                  roundsMode
+                    ? 'bg-amber-500/80 border-amber-400 text-white'
+                    : 'bg-white/20 border-white/30 text-white/90 hover:bg-white/30'
+                }`}
+                title="Toggle Rounds Mode"
+              >
+                <Bell className="w-3.5 h-3.5" />
+                <span className="hidden xs:inline sm:inline">Rounds</span>
+              </motion.button>
+
+              {/* Target number indicator */}
+              {targetNumber && (
+                <div className="px-2 sm:px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white/90 text-xs sm:text-sm font-medium flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
+                  <Bell className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  {targetNumber}
+                </div>
+              )}
+
+              {/* Stats link */}
+              <Link
+                to={createPageUrl('Stats')}
+                onClick={(e) => e.stopPropagation()}
+                className="p-2.5 sm:p-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white/90 hover:bg-white/30 transition-all active:scale-95 flex-shrink-0"
+              >
+                <BarChart2 className="w-4 h-4 sm:w-5 sm:h-5" />
+              </Link>
+
+              {/* Settings button */}
+              <button
+                onClick={(e) => { e.stopPropagation(); setShowSettings(true); }}
+                className="settings-btn p-2.5 sm:p-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white/90 hover:bg-white/30 transition-all active:scale-95 flex-shrink-0"
+              >
+                <Settings className="w-4 h-4 sm:w-5 sm:h-5" />
+              </button>
+            </div>
+
+            {/* Bottom row - Streak badge */}
+            <StreakBadge streak={stats.streak || 0} />
           </div>
-          <StreakBadge streak={stats.streak || 0} />
         </div>
       </div>
 

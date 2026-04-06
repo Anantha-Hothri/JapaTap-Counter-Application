@@ -86,3 +86,64 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Mobile-first responsive utilities for JapaTap */
+@layer utilities {
+  /* Prevent text selection on tap buttons */
+  .tap-area {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Mobile-optimized touch targets (min 44x44px for accessibility) */
+  .touch-target {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* Prevent layout shift on mobile */
+  .no-layout-shift {
+    contain: layout style;
+  }
+
+  /* Mobile-safe z-index layers */
+  .z-mobile-dropdown {
+    z-index: 9999;
+  }
+
+  /* Smooth scrolling for mobile */
+  .mobile-scroll {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  /* Better text rendering on mobile */
+  .mobile-text {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+/* Mobile-specific media queries */
+@media (max-width: 479px) {
+  /* Very small phones - reduce padding and spacing */
+  .header-compact {
+    padding: 0.5rem !important;
+  }
+
+  /* Ensure buttons don't get too small */
+  button, a {
+    min-height: 40px;
+  }
+}
+
+@media (min-width: 480px) and (max-width: 767px) {
+  /* Small phones to phablets */
+  .content-spacing {
+    padding: 1rem;
+  }
+}

@@ -38,16 +38,16 @@ export default function BatterySaverLauncher({ onActivate }) {
 
   return (
     <>
-      {/* Header button */}
+      {/* Header button - Compact on mobile */}
       <motion.button
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         onClick={(e) => { e.stopPropagation(); setOpen(true); }}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all backdrop-blur-md bg-white/20 border-white/30 text-white/90 hover:bg-white/30"
+        className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-full text-xs font-semibold border transition-all backdrop-blur-md bg-white/20 border-white/30 text-white/90 hover:bg-white/30 flex-shrink-0"
         title="Battery Saver Mode"
       >
         <BatteryLow className="w-3.5 h-3.5 text-green-300" />
-        <span>Saver</span>
+        <span className="hidden xs:inline sm:inline">Saver</span>
       </motion.button>
 
       {/* Bottom sheet */}
