@@ -1,8 +1,10 @@
 {
-  "name": "base44-app",
+  "name": "japatap-counter",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "description": "A beautiful japa mala counter application for meditation and chanting",
+  "author": "Anantha Hothri",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

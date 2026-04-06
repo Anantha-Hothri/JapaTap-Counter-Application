@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import { createPageUrl } from '@/utils';
@@ -13,6 +13,11 @@ export default function Stats() {
   const [tab, setTab] = useState('overview');
   const { stats, loading, isLoggedIn } = useStats();
   const [showLoginModal, setShowLoginModal] = useState(false);
+
+  // Set page title
+  useEffect(() => {
+    document.title = 'Stats - JapaTap Counter';
+  }, []);
 
   const streak       = stats.streak || 0;
   const totalTaps    = stats.totalTaps || 0;

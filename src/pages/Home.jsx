@@ -33,7 +33,10 @@ export default function Home() {
 
   const { stats, updateStats, loading } = useStats();
 
-
+  // Set page title
+  useEffect(() => {
+    document.title = 'JapaTap Counter - Meditation & Chanting';
+  }, []);
 
   // Daily login streak update (once stats are loaded)
   useEffect(() => {

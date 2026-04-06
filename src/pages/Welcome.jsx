@@ -8,6 +8,11 @@ export default function Welcome() {
   const [phase, setPhase] = useState('splash'); // splash | choice
   const [showLoginModal, setShowLoginModal] = useState(false);
 
+  // Set page title
+  useEffect(() => {
+    document.title = 'Welcome - JapaTap Counter';
+  }, []);
+
   useEffect(() => {
     const checkAuth = async () => {
       const isGuest = localStorage.getItem('japa_guestMode') === 'true';
