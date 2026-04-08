@@ -6,7 +6,8 @@
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   signOut,
   updateProfile,
   onAuthStateChanged
@@ -139,30 +140,58 @@ export const signInWithEmail = async (email, password) => {
 };
 
 /**
- * Sign in with Google
+ * Sign in with Google using redirect (better for mobile)
  */
 export const signInWithGoogle = async () => {
   try {
     checkFirebaseInit();
-    const result = await signInWithPopup(auth, googleProvider);
-    const user = result.user;
-    
-    // Create or update user profile
-    const profile = await createUserProfile(user.uid, {
-      email: user.email,
-      full_name: user.displayName,
-      displayName: user.displayName
-    });
-    
-    return {
-      success: true,
-      user: {
-        ...profile,
-        uid: user.uid
-      }
-    };
+    // Initiate redirect to Google sign-in
+    await signInWithRedirect(auth, googleProvider);
+    // Note: This function doesn't return immediately
+    // The redirect result is handled by handleRedirectResult()
+    return { success: true, redirecting: true };
   } catch (error) {
     console.error('Google sign in error:', error);
+    return {
+      success: false,
+      error: getErrorMessage(error.code)
+    };
+  }
+};
+
+/**
+ * Handle redirect result after Google sign-in
+ * Call this on app initialization
+ */
+export const handleRedirectResult = async () => {
+  try {
+    checkFirebaseInit();
+    const result = await getRedirectResult(auth);
+
+    if (result) {
+      // User successfully signed in via redirect
+      const user = result.user;
+
+      // Create or update user profile
+      const profile = await createUserProfile(user.uid, {
+        email: user.email,
+        full_name: user.displayName,
+        displayName: user.displayName
+      });
+
+      return {
+        success: true,
+        user: {
+          ...profile,
+          uid: user.uid
+        }
+      };
+    }
+
+    // No redirect result (normal page load)
+    return null;
+  } catch (error) {
+    console.error('Redirect result error:', error);
     return {
       success: false,
       error: getErrorMessage(error.code)

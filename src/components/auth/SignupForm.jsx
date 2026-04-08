@@ -66,6 +66,14 @@ export default function SignupForm({ onSuccess, onSwitchToLogin }) {
     setLoading(true);
     try {
       const result = await signInWithGoogle();
+
+      if (result.redirecting) {
+        // User is being redirected to Google - keep loading state
+        // The redirect will happen automatically
+        // When user comes back, App.jsx will handle the result
+        return;
+      }
+
       setLoading(false);
 
       if (result.success) {
